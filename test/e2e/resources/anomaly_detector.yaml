@@ -1,0 +1,10 @@
+apiVersion: cloudwatch.services.k8s.aws/v1alpha1
+kind: AnomalyDetector
+metadata:
+  name: $ANOMALY_DETECTOR_NAME
+  namespace: default
+spec:
+  singleMetricAnomalyDetector:
+    namespace: AWS/EC2
+    metricName: CPUUtilization
+    stat: Average

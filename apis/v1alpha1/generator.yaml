@@ -2,13 +2,24 @@ empty_shapes:
   - SlidingWindow
 ignore:
   resource_names:
-    - AnomalyDetector
     - CompositeAlarm
     - InsightRule
     - ManagedInsightRule
     # - MetricStream
   field_paths:
     - PutDashboardInput.Tags
+    - PutAnomalyDetectorInput.Dimensions
+    - PutAnomalyDetectorInput.MetricName
+    - PutAnomalyDetectorInput.Namespace
+    - PutAnomalyDetectorInput.Stat
+    - AnomalyDetector.Dimensions
+    - AnomalyDetector.MetricName
+    - AnomalyDetector.Namespace
+    - AnomalyDetector.Stat
+    - DeleteAnomalyDetectorInput.Dimensions
+    - DeleteAnomalyDetectorInput.MetricName
+    - DeleteAnomalyDetectorInput.Namespace
+    - DeleteAnomalyDetectorInput.Stat
 operations:
   DeleteAlarms:
     operation_type:
@@ -46,7 +57,40 @@ operations:
     - Create
     - Update
     resource_name: Dashboard
+  PutAnomalyDetector:
+    operation_type:
+    - Create
+    - Update
+    resource_name: AnomalyDetector
+  DescribeAnomalyDetectors:
+    output_wrapper_field_path: AnomalyDetectors
+    operation_type:
+    - List
+    resource_name: AnomalyDetector
+  DeleteAnomalyDetector:
+    operation_type:
+    - Delete
+    resource_name: AnomalyDetector
 resources:
+  AnomalyDetector:
+    fields:
+      AnomalyDetectorId:
+        is_read_only: true
+      SingleMetricAnomalyDetector:
+        is_immutable: true
+      MetricMathAnomalyDetector:
+        is_immutable: true
+    hooks:
+      sdk_read_many_post_build_request:
+        template_path: hooks/anomaly_detector/sdk_read_many_post_build_request.go.tpl
+      sdk_delete_post_build_request:
+        template_path: hooks/anomaly_detector/sdk_delete_post_build_request.go.tpl
+    exceptions:
+      terminal_codes:
+        - InvalidParameterCombinationException
+        - MissingRequiredParameterException
+    tags:
+      ignore: true
   MetricStream:
     fields:
       RoleARN:

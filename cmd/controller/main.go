@@ -43,6 +43,7 @@ import (
 	svctypes "github.com/aws-controllers-k8s/cloudwatch-controller/apis/v1alpha1"
 	svcresource "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource"
 
+	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/anomaly_detector"
 	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/dashboard"
 	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/metric_alarm"
 	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/metric_stream"

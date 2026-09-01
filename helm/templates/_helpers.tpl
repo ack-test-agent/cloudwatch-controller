@@ -72,6 +72,7 @@ rules:
 - apiGroups:
   - cloudwatch.services.k8s.aws
   resources:
+  - anomalydetectors
   - dashboards
   - metricalarms
   - metricstreams
@@ -86,6 +87,7 @@ rules:
 - apiGroups:
   - cloudwatch.services.k8s.aws
   resources:
+  - anomalydetectors/status
   - dashboards/status
   - metricalarms/status
   - metricstreams/status

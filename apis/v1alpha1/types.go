@@ -57,6 +57,14 @@ type AlarmPromQLCriteria struct {
 	RecoveryPeriod *int64  `json:"recoveryPeriod,omitempty"`
 }
 
+// The configuration specifies details about how the anomaly detection model
+// is to be trained, including time ranges to exclude from use for training
+// the model and the time zone to use for the metric.
+type AnomalyDetectorConfiguration struct {
+	ExcludedTimeRanges []*Range `json:"excludedTimeRanges,omitempty"`
+	MetricTimezone     *string  `json:"metricTimezone,omitempty"`
+}
+
 // An anomaly detection model associated with a particular CloudWatch metric,
 // statistic, or metric math expression. You can use the model to display a
 // band of expected, normal values when the metric is graphed.
@@ -64,10 +72,25 @@ type AlarmPromQLCriteria struct {
 // If you have enabled unified cross-account observability, and this account
 // is a monitoring account, the metric can be in the same account or a source
 // account.
-type AnomalyDetector struct {
-	Dimensions []*Dimension `json:"dimensions,omitempty"`
-	MetricName *string      `json:"metricName,omitempty"`
-	Namespace  *string      `json:"namespace,omitempty"`
+type AnomalyDetector_SDK struct {
+	AnomalyDetectorID *string `json:"anomalyDetectorID,omitempty"`
+	// The configuration specifies details about how the anomaly detection model
+	// is to be trained, including time ranges to exclude from use for training
+	// the model and the time zone to use for the metric.
+	Configuration *AnomalyDetectorConfiguration `json:"configuration,omitempty"`
+	// This object includes parameters that you can use to provide information to
+	// CloudWatch to help it build more accurate anomaly detection models.
+	MetricCharacteristics *MetricCharacteristics `json:"metricCharacteristics,omitempty"`
+	// Indicates the CloudWatch math expression that provides the time series the
+	// anomaly detector uses as input. The designated math expression must return
+	// a single time series.
+	MetricMathAnomalyDetector *MetricMathAnomalyDetector `json:"metricMathAnomalyDetector,omitempty"`
+	// Designates the CloudWatch metric and statistic that provides the time series
+	// the anomaly detector uses as input. If you have enabled unified cross-account
+	// observability, and this account is a monitoring account, the metric can be
+	// in the same account or a source account.
+	SingleMetricAnomalyDetector *SingleMetricAnomalyDetector `json:"singleMetricAnomalyDetector,omitempty"`
+	StateValue                  *string                      `json:"stateValue,omitempty"`
 }
 
 // The details about a composite alarm.
@@ -281,6 +304,12 @@ type MetricAlarm_SDK struct {
 	Unit                       *string            `json:"unit,omitempty"`
 }
 
+// This object includes parameters that you can use to provide information to
+// CloudWatch to help it build more accurate anomaly detection models.
+type MetricCharacteristics struct {
+	PeriodicSpikes *bool `json:"periodicSpikes,omitempty"`
+}
+
 // This structure is used in both GetMetricData and PutMetricAlarm. The supported
 // use of this structure is different for those two operations.
 //
@@ -439,6 +468,7 @@ type SingleMetricAnomalyDetector struct {
 	Dimensions []*Dimension `json:"dimensions,omitempty"`
 	MetricName *string      `json:"metricName,omitempty"`
 	Namespace  *string      `json:"namespace,omitempty"`
+	Stat       *string      `json:"stat,omitempty"`
 }
 
 // A key-value pair associated with a CloudWatch resource.

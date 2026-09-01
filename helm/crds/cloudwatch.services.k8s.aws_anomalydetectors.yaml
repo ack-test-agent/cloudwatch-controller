@@ -1,0 +1,325 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.19.0
+  name: anomalydetectors.cloudwatch.services.k8s.aws
+spec:
+  group: cloudwatch.services.k8s.aws
+  names:
+    kind: AnomalyDetector
+    listKind: AnomalyDetectorList
+    plural: anomalydetectors
+    singular: anomalydetector
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: AnomalyDetector is the Schema for the AnomalyDetectors API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: |-
+              AnomalyDetectorSpec defines the desired state of AnomalyDetector.
+
+              An anomaly detection model associated with a particular CloudWatch metric,
+              statistic, or metric math expression. You can use the model to display a
+              band of expected, normal values when the metric is graphed.
+
+              If you have enabled unified cross-account observability, and this account
+              is a monitoring account, the metric can be in the same account or a source
+              account.
+            properties:
+              configuration:
+                description: |-
+                  The configuration specifies details about how the anomaly detection model
+                  is to be trained, including time ranges to exclude when training and updating
+                  the model. You can specify as many as 10 time ranges.
+
+                  The configuration can also include the time zone to use for the metric.
+                properties:
+                  excludedTimeRanges:
+                    items:
+                      description: |-
+                        Specifies one range of days or times to exclude from use for training an
+                        anomaly detection model.
+                      properties:
+                        endTime:
+                          format: date-time
+                          type: string
+                        startTime:
+                          format: date-time
+                          type: string
+                      type: object
+                    type: array
+                  metricTimezone:
+                    type: string
+                type: object
+              metricCharacteristics:
+                description: |-
+                  Use this object to include parameters to provide information about your metric
+                  to CloudWatch to help it build more accurate anomaly detection models. Currently,
+                  it includes the PeriodicSpikes parameter.
+                properties:
+                  periodicSpikes:
+                    type: boolean
+                type: object
+              metricMathAnomalyDetector:
+                description: |-
+                  The metric math anomaly detector to be created.
+
+                  When using MetricMathAnomalyDetector, you cannot include the following parameters
+                  in the same operation:
+
+                    - Dimensions
+
+                    - MetricName
+
+                    - Namespace
+
+                    - Stat
+
+                    - the SingleMetricAnomalyDetector parameters of PutAnomalyDetectorInput
+
+                  Instead, specify the metric math anomaly detector attributes as part of the
+                  property MetricMathAnomalyDetector.
+                properties:
+                  metricDataQueries:
+                    items:
+                      description: |-
+                        This structure is used in both GetMetricData and PutMetricAlarm. The supported
+                        use of this structure is different for those two operations.
+
+                        When used in GetMetricData, it indicates the metric data to return, and whether
+                        this call is just retrieving a batch set of data for one metric, or is performing
+                        a Metrics Insights query or a math expression. A single GetMetricData call
+                        can include up to 500 MetricDataQuery structures.
+
+                        When used in PutMetricAlarm, it enables you to create an alarm based on a
+                        metric math expression. Each MetricDataQuery in the array specifies either
+                        a metric to retrieve, or a math expression to be performed on retrieved metrics.
+                        A single PutMetricAlarm call can include up to 20 MetricDataQuery structures
+                        in the array. The 20 structures can include as many as 10 structures that
+                        contain a MetricStat parameter to retrieve a metric, and as many as 10 structures
+                        that contain the Expression parameter to perform a math expression. Of those
+                        Expression structures, one must have true as the value for ReturnData. The
+                        result of this expression is the value the alarm watches.
+
+                        Any expression used in a PutMetricAlarm operation must return a single time
+                        series. For more information, see Metric Math Syntax and Functions (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax)
+                        in the Amazon CloudWatch User Guide.
+
+                        Some of the parameters of this structure also have different uses whether
+                        you are using this structure in a GetMetricData operation or a PutMetricAlarm
+                        operation. These differences are explained in the following parameter list.
+                      properties:
+                        accountID:
+                          type: string
+                        expression:
+                          type: string
+                        id:
+                          type: string
+                        label:
+                          type: string
+                        metricStat:
+                          description: |-
+                            This structure defines the metric to be returned, along with the statistics,
+                            period, and units.
+                          properties:
+                            metric:
+                              description: Represents a specific metric.
+                              properties:
+                                dimensions:
+                                  items:
+                                    description: |-
+                                      A dimension is a name/value pair that is part of the identity of a metric.
+                                      Because dimensions are part of the unique identifier for a metric, whenever
+                                      you add a unique name/value pair to one of your metrics, you are creating
+                                      a new variation of that metric. For example, many Amazon EC2 metrics publish
+                                      InstanceId as a dimension name, and the actual instance ID as the value for
+                                      that dimension.
+
+                                      You can assign up to 30 dimensions to a metric.
+                                    properties:
+                                      name:
+                                        type: string
+                                      value:
+                                        type: string
+                                    type: object
+                                  type: array
+                                metricName:
+                                  type: string
+                                namespace:
+                                  type: string
+                              type: object
+                            period:
+                              format: int64
+                              type: integer
+                            stat:
+                              type: string
+                            unit:
+                              type: string
+                          type: object
+                        period:
+                          format: int64
+                          type: integer
+                        returnData:
+                          type: boolean
+                      type: object
+                    type: array
+                type: object
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
+              singleMetricAnomalyDetector:
+                description: |-
+                  A single metric anomaly detector to be created.
+
+                  When using SingleMetricAnomalyDetector, you cannot include the following
+                  parameters in the same operation:
+
+                    - Dimensions
+
+                    - MetricName
+
+                    - Namespace
+
+                    - Stat
+
+                    - the MetricMathAnomalyDetector parameters of PutAnomalyDetectorInput
+
+                  Instead, specify the single metric anomaly detector attributes as part of
+                  the property SingleMetricAnomalyDetector.
+                properties:
+                  accountID:
+                    type: string
+                  dimensions:
+                    items:
+                      description: |-
+                        A dimension is a name/value pair that is part of the identity of a metric.
+                        Because dimensions are part of the unique identifier for a metric, whenever
+                        you add a unique name/value pair to one of your metrics, you are creating
+                        a new variation of that metric. For example, many Amazon EC2 metrics publish
+                        InstanceId as a dimension name, and the actual instance ID as the value for
+                        that dimension.
+
+                        You can assign up to 30 dimensions to a metric.
+                      properties:
+                        name:
+                          type: string
+                        value:
+                          type: string
+                      type: object
+                    type: array
+                  metricName:
+                    type: string
+                  namespace:
+                    type: string
+                  stat:
+                    type: string
+                type: object
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
+            type: object
+          status:
+            description: AnomalyDetectorStatus defines the observed state of AnomalyDetector
+            properties:
+              ackResourceMetadata:
+                description: |-
+                  All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+                  that is used to contain resource sync state, account ownership,
+                  constructed ARN for the resource
+                properties:
+                  arn:
+                    description: |-
+                      ARN is the Amazon Resource Name for the resource. This is a
+                      globally-unique identifier and is set only by the ACK service controller
+                      once the controller has orchestrated the creation of the resource OR
+                      when it has verified that an "adopted" resource (a resource where the
+                      ARN annotation was set by the Kubernetes user on the CR) exists and
+                      matches the supplied CR's Spec field values.
+                      https://github.com/aws/aws-controllers-k8s/issues/270
+                    type: string
+                  ownerAccountID:
+                    description: |-
+                      OwnerAccountID is the AWS Account ID of the account that owns the
+                      backend AWS service API resource.
+                    type: string
+                  partition:
+                    description: Partition is the AWS partition in which the resource
+                      exists or will exist
+                    type: string
+                  region:
+                    description: Region is the AWS region in which the resource exists
+                      or will exist.
+                    type: string
+                required:
+                - ownerAccountID
+                - region
+                type: object
+              anomalyDetectorID:
+                description: |-
+                  The unique identifier of the anomaly detector that you created or updated.
+
+                  Regex Pattern: `^[A-Za-z0-9_./:%()+-]+$`
+                type: string
+              conditions:
+                description: |-
+                  All CRs managed by ACK have a common `Status.Conditions` member that
+                  contains a collection of `ackv1alpha1.Condition` objects that describe
+                  the various terminal states of the CR and its backend AWS service API
+                  resource
+                items:
+                  description: |-
+                    Condition is the common struct used by all CRDs managed by ACK service
+                    controllers to indicate terminal states  of the CR and its backend AWS
+                    service API resource
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human readable message indicating details about
+                        the transition.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type is the type of the Condition
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
