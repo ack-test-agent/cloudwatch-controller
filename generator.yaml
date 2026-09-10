@@ -4,7 +4,6 @@ ignore:
   resource_names:
     - AnomalyDetector
     - CompositeAlarm
-    - InsightRule
     - ManagedInsightRule
     # - MetricStream
   field_paths:
@@ -46,7 +45,61 @@ operations:
     - Create
     - Update
     resource_name: Dashboard
+  PutInsightRule:
+    operation_type:
+    - Create
+    - Update
+    resource_name: InsightRule
+  DescribeInsightRules:
+    output_wrapper_field_path: InsightRules
+    operation_type:
+    - ReadMany
+    resource_name: InsightRule
+  DeleteInsightRules:
+    operation_type:
+    - Delete
+    resource_name: InsightRule
 resources:
+  InsightRule:
+    list_operation:
+      match_fields:
+        - RuleName
+    fields:
+      RuleName:
+        is_primary_key: true
+        is_immutable: true
+        is_required: true
+      RuleDefinition:
+        is_required: true
+      Schema:
+        is_read_only: true
+        from:
+          operation: DescribeInsightRules
+          path: InsightRules.Schema
+      ManagedRule:
+        is_read_only: true
+        from:
+          operation: DescribeInsightRules
+          path: InsightRules.ManagedRule
+    renames:
+      operations:
+        DescribeInsightRules:
+          output_fields:
+            Name: RuleName
+            Definition: RuleDefinition
+            State: RuleState
+    hooks:
+      sdk_delete_post_build_request:
+        template_path: hooks/insight_rule/sdk_delete_post_build_request.go.tpl
+      sdk_read_many_post_set_output:
+        template_path: hooks/insight_rule/sdk_read_many_post_set_output.go.tpl
+      sdk_update_pre_build_request:
+        template_path: hooks/insight_rule/sdk_update_pre_build_request.go.tpl
+    exceptions:
+      terminal_codes:
+        - InvalidParameterValueException
+        - LimitExceededException
+        - MissingRequiredParameterException
   MetricStream:
     fields:
       RoleARN:

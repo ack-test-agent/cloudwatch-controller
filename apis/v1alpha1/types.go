@@ -188,6 +188,19 @@ type InsightRuleMetricDatapoint struct {
 	Timestamp *metav1.Time `json:"timestamp,omitempty"`
 }
 
+// This structure contains the definition for a Contributor Insights rule. For
+// more information about this rule, see Using Constributor Insights to analyze
+// high-cardinality data (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContributorInsights.html)
+// in the Amazon CloudWatch User Guide.
+type InsightRule_SDK struct {
+	ApplyOnTransformedLogs *bool   `json:"applyOnTransformedLogs,omitempty"`
+	Definition             *string `json:"definition,omitempty"`
+	ManagedRule            *bool   `json:"managedRule,omitempty"`
+	Name                   *string `json:"name,omitempty"`
+	Schema                 *string `json:"schema,omitempty"`
+	State                  *string `json:"state,omitempty"`
+}
+
 // The details about a log alarm.
 type LogAlarm struct {
 	ActionLogLineCount                 *int64       `json:"actionLogLineCount,omitempty"`
@@ -227,6 +240,12 @@ type ManagedRule struct {
 // by ListManagedInsightRules.
 type ManagedRuleDescription struct {
 	ResourceARN *string `json:"resourceARN,omitempty"`
+}
+
+// The status of a managed Contributor Insights rule.
+type ManagedRuleState struct {
+	RuleName *string `json:"ruleName,omitempty"`
+	State    *string `json:"state,omitempty"`
 }
 
 // Represents a specific metric.
@@ -390,6 +409,16 @@ type MetricStreamStatisticsConfiguration struct {
 type MetricStreamStatisticsMetric struct {
 	MetricName *string `json:"metricName,omitempty"`
 	Namespace  *string `json:"namespace,omitempty"`
+}
+
+// This array is empty if the API operation was successful for all the rules
+// specified in the request. If the operation could not process one of the rules,
+// the following data is returned for each of those rules.
+type PartialFailure struct {
+	ExceptionType      *string `json:"exceptionType,omitempty"`
+	FailureCode        *string `json:"failureCode,omitempty"`
+	FailureDescription *string `json:"failureDescription,omitempty"`
+	FailureResource    *string `json:"failureResource,omitempty"`
 }
 
 // Specifies one range of days or times to exclude from use for training an
