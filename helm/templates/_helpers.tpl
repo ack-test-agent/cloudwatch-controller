@@ -73,6 +73,7 @@ rules:
   - cloudwatch.services.k8s.aws
   resources:
   - dashboards
+  - insightrules
   - metricalarms
   - metricstreams
   verbs:
@@ -87,6 +88,7 @@ rules:
   - cloudwatch.services.k8s.aws
   resources:
   - dashboards/status
+  - insightrules/status
   - metricalarms/status
   - metricstreams/status
   verbs:

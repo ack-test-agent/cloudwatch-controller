@@ -4,7 +4,6 @@ ignore:
   resource_names:
     - AnomalyDetector
     - CompositeAlarm
-    - InsightRule
     - ManagedInsightRule
     # - MetricStream
   field_paths:
@@ -46,6 +45,20 @@ operations:
     - Create
     - Update
     resource_name: Dashboard
+  PutInsightRule:
+    operation_type:
+    - Create
+    - Update
+    resource_name: InsightRule
+  DescribeInsightRules:
+    output_wrapper_field_path: InsightRules
+    operation_type:
+    - List
+    resource_name: InsightRule
+  DeleteInsightRules:
+    operation_type:
+    - Delete
+    resource_name: InsightRule
 resources:
   MetricStream:
     fields:
@@ -80,6 +93,38 @@ resources:
         template_path: hooks/metricalarm/sdk_delete_post_build_request.go.tpl
       sdk_update_pre_build_request:
         template_path: hooks/metricalarm/sdk_update_pre_build_request.go.tpl
+  InsightRule:
+    fields:
+      Name:
+        is_primary_key: true
+        is_required: true
+        is_immutable: true
+      Definition:
+        is_required: true
+    renames:
+      operations:
+        PutInsightRule:
+          input_fields:
+            RuleName: Name
+            RuleDefinition: Definition
+            RuleState: State
+    hooks:
+      sdk_read_many_pre_set_output:
+        template_path: hooks/insight_rule/sdk_read_many_pre_set_output.go.tpl
+      sdk_read_many_post_set_output:
+        template_path: hooks/insight_rule/sdk_read_many_post_set_output.go.tpl
+      sdk_create_post_set_output:
+        template_path: hooks/insight_rule/sdk_create_post_set_output.go.tpl
+      sdk_delete_post_build_request:
+        template_path: hooks/insight_rule/sdk_delete_post_build_request.go.tpl
+      sdk_delete_post_request:
+        template_path: hooks/insight_rule/sdk_delete_post_request.go.tpl
+      sdk_update_pre_build_request:
+        template_path: hooks/insight_rule/sdk_update_pre_build_request.go.tpl
+    exceptions:
+      terminal_codes:
+        - InvalidParameterValueException
+        - MissingRequiredParameterException
   Dashboard:
     fields:
       DashboardName:

@@ -44,6 +44,7 @@ import (
 	svcresource "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource"
 
 	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/dashboard"
+	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/insight_rule"
 	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/metric_alarm"
 	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/metric_stream"
 

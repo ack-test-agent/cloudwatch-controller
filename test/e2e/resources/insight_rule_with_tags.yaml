@@ -1,0 +1,21 @@
+apiVersion: cloudwatch.services.k8s.aws/v1alpha1
+kind: InsightRule
+metadata:
+  name: $INSIGHT_RULE_NAME
+spec:
+  name: $INSIGHT_RULE_NAME
+  definition: |
+    {
+      "Schema": {"Name": "CloudWatchLogRule", "Version": 1},
+      "AggregateOn": "Count",
+      "Contribution": {
+        "Filters": [],
+        "Keys": ["$.sourceIPAddress"]
+      },
+      "LogFormat": "JSON",
+      "LogGroupNames": ["/aws/cloudtrail"]
+    }
+  state: ENABLED
+  tags:
+    - key: env
+      value: $TAG_VALUE
